@@ -25,18 +25,35 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/timestamp", function (req, res) {
+  let now = new Date();
+
+  res.json({
+    'unix': now.getTime(),
+    'utc': now.toUTCString()
+  });
+});
+
 app.get("/api/timestamp/:date", function (req, res) {
-  let date = new Date(Date.parse(req.params.date));
-  console.log(date);
-  if (date == 'Invalid Date') {
+  let date = Date.parse(req.params.date)
+  
+  if (isNaN(date)) {
+    date = new Date(Number(req.params.date))
+  }
+  
+
+  passed_value = new Date(date)
+  
+  // console.log(passed_value)
+
+  if (passed_value == 'Invalid Date') {
     res.json({ error : "Invalid Date" });
   } else {
     res.json({
-      'unix': date.getTime(),
-      'utc': date
+      'unix': passed_value.getTime(),
+      'utc': passed_value.toUTCString()
     });
   }
-  
 });
 
 
