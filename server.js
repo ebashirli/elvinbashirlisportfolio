@@ -25,7 +25,10 @@ app.get("/api/hello", function (req, res) {
 });
 
 app.get("/api/timestamp/:date", function (req, res) {
-  res.json({unix: req.params.date});
+  let date = req.params.date
+  res.json({
+    unix: Math.floor(date / 1000),
+    utc: date.getTime()});
 });
 
 
