@@ -24,6 +24,10 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get("/api/timestamp/:date", function (req, res) {
+  res.json({unix: req.params.date});
+});
+
 
 
 // listen for requests :)
