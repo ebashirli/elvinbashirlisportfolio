@@ -66,7 +66,7 @@ app.get("/api/whoami", function (req, res) {
   let now = new Date();
 
   res.json({
-    ipaddress: req.headers.ipaddress,
+    ipaddress: req.ip,
     language: req.headers["accept-language"],
     software: req.headers["user-agent"],
   });
