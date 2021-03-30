@@ -6,7 +6,7 @@ var express = require("express");
 var mongo = require("mongodb");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
-const { nanoid } = require('nanoid')
+const { nanoid } = require("nanoid");
 var cors = require("cors");
 var app = express();
 var port = process.env.PORT || 3000;
@@ -101,7 +101,7 @@ const Schema = mongoose.Schema;
 const urlSchema = new Schema({
   original_url: String,
   short_url: String,
-  suffix: String
+  suffix: String,
 });
 
 const UrlModel = mongoose.model("UrlModel", urlSchema);
@@ -112,21 +112,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/api/shorturl/new", function (req, res) {
   var input_url = req.body.url;
-  var suffix = nanoid(5)
 
-  let newURL = new UrlModel({
-    original_url: input_url,
-    short_url: __dirname + '/api/shorturl/' + suffix,
-    suffix: suffix
-  });
-
-  newURL.save(function (err, data) {
-    if (err) return done(err);
+  var regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+  if (!regex.test(input_url)) {
     res.json({
-      original_url:newURL.original_url,
-      short_url: newURL.short_url
+      error: "invalid URL",
     });
-  });
+  } else {
+    
+    var suffix = nanoid(5);
+
+    let newURL = new UrlModel({
+      original_url: input_url,
+      short_url: __dirname + "/api/shorturl/" + suffix,
+      suffix: suffix,
+    });
+
+    newURL.save(function (err, data) {
+      if (err) return done(err);
+      res.json({
+        original_url: newURL.original_url,
+        short_url: newURL.short_url,
+      });
+    });
+  }
 });
 
 app.get("/api/shorturl/:suffix", function (req, res) {
