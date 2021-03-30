@@ -101,7 +101,6 @@ const Schema = mongoose.Schema;
 const urlSchema = new Schema({
   original_url: String,
   short_url: String,
-  suffix: String,
 });
 
 const UrlModel = mongoose.model("UrlModel", urlSchema);
@@ -120,12 +119,11 @@ app.post("/api/shorturl/new", function (req, res) {
     });
   } else {
     
-    var suffix = nanoid(5);
+    var short_url = nanoid(5);
 
     let newURL = new UrlModel({
       original_url: input_url,
-      short_url: __dirname + "/api/shorturl/" + suffix,
-      suffix: suffix,
+      short_url: short_url
     });
 
     newURL.save(function (err, data) {
@@ -138,8 +136,8 @@ app.post("/api/shorturl/new", function (req, res) {
   }
 });
 
-app.get("/api/shorturl/:suffix", function (req, res) {
-  UrlModel.findOne({ suffix: req.params.suffix }, (err, data) => {
+app.get("/api/shorturl/:short_url", function (req, res) {
+  UrlModel.findOne({ short_url: req.params.short_url   }, (err, data) => {
     if (err) return console.log(err);
     res.redirect(data.original_url);
   });
