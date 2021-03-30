@@ -3,12 +3,28 @@
 
 // init project
 var express = require("express");
+var mongo = require("mongodb");
+var mongoose = require("mongoose");
+var bodyParser = require("body-parser");
+const { nanoid } = require('nanoid')
+var cors = require("cors");
 var app = express();
 var port = process.env.PORT || 3000;
 
+require("dotenv").config();
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongoose.connection.on("connected", () => {
+  console.log("Mongoose is connected");
+});
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
-var cors = require("cors");
+
 app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -27,11 +43,16 @@ app.get("/header-parser", function (req, res) {
   res.sendFile(__dirname + "/views/headerparser.html");
 });
 
+app.get("/url-shortener", function (req, res) {
+  res.sendFile(__dirname + "/views/urlshortener.html");
+});
+
 // your first API endpoint...
 app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
+// Timestamp Microservice Project
 app.get("/api/timestamp", function (req, res) {
   let now = new Date();
 
@@ -62,6 +83,7 @@ app.get("/api/timestamp/:date", function (req, res) {
   }
 });
 
+// Request Header Parser Microservice Project
 app.get("/api/whoami", function (req, res) {
   let now = new Date();
 
@@ -69,6 +91,48 @@ app.get("/api/whoami", function (req, res) {
     ipaddress: req.ip,
     language: req.headers["accept-language"],
     software: req.headers["user-agent"],
+  });
+});
+
+// URL Shirtener Microservice
+
+const Schema = mongoose.Schema;
+
+const urlSchema = new Schema({
+  original_url: String,
+  short_url: String,
+  suffix: String
+});
+
+const UrlModel = mongoose.model("UrlModel", urlSchema);
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/api/shorturl/new", function (req, res) {
+  var input_url = req.body.url;
+  var suffix = nanoid(5)
+
+  let newURL = new UrlModel({
+    original_url: input_url,
+    short_url: __dirname + '/api/shorturl/' + suffix,
+    suffix: suffix
+  });
+
+  newURL.save(function (err, data) {
+    if (err) return done(err);
+    res.json({
+      original_url:newURL.original_url,
+      short_url: newURL.short_url
+    });
+  });
+});
+
+app.get("/api/shorturl/:suffix", function (req, res) {
+  UrlModel.findOne({ suffix: req.params.suffix }, (err, data) => {
+    if (err) return console.log(err);
+    res.redirect(data.original_url);
   });
 });
 
