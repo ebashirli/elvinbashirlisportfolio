@@ -6,6 +6,7 @@ var express = require("express");
 var mongo = require("mongodb");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+var multer = require("multer");
 const { nanoid } = require("nanoid");
 var cors = require("cors");
 var app = express();
@@ -50,6 +51,10 @@ app.get("/url-shortener", (req, res) => {
 
 app.get("/exercise-tracker", (req, res) => {
   res.sendFile(__dirname + "/views/exercise-tracker.html");
+});
+
+app.get("/file-metadata", (req, res) => {
+  res.sendFile(__dirname + "/views/file-metadata.html");
 });
 
 // your first API endpoint...
@@ -262,6 +267,19 @@ app.get("/api/exercise/log", (req, res) => {
     }
   });
 });
+
+// File Metadata
+app.post(
+  "/api/fileanalyse",
+  multer().single('upfile'),
+  (req, res) => {
+    res.json({
+      name: req.file.originalname,
+      type: req.file.mimetype,
+      size: req.file.size
+    });
+  }
+);
 
 // listen for requests :)
 var listener = app.listen(port, () => {
