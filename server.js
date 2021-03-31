@@ -6,6 +6,7 @@ var express = require("express");
 var mongo = require("mongodb");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
+var dateFormat = require("dateformat");
 const { nanoid } = require("nanoid");
 var cors = require("cors");
 var app = express();
@@ -59,7 +60,6 @@ app.get("/api/hello", function (req, res) {
 // Timestamp Microservice Project
 app.get("/api/timestamp", function (req, res) {
   let now = new Date();
-
   res.json({
     unix: now.getTime(),
     utc: now.toUTCString(),
@@ -150,6 +150,19 @@ app.get("/api/shorturl/:short_url", function (req, res) {
 
 const userSchema = new Schema({
   username: String,
+  log: [
+    {
+      date: String,
+      duration: {
+        type: Number,
+        required: true,
+      },
+      description: {
+        type: String,
+        required: true,
+      },
+    }
+  ]
 });
 
 const UserModel = mongoose.model("UserModel", userSchema);
@@ -157,26 +170,23 @@ const UserModel = mongoose.model("UserModel", userSchema);
 app.post("/api/exercise/new-user", (req, res) => {
   let username = req.body.username;
 
-  UserModel.find({username: username})
-    .exec((err, users) => {
-        //Try to find a username
-        if (!users.length) {
-            //If none is found create a new username
-            let newUser = new UserModel({
-              username: username,
-            });
-          
-            newUser.save((err, data) => {
-              if (err) return console.log(err);
-              res.json({
-                _id: data._id,
-                username: data.username,
-              });
-            });
-        } else {
-          res.send('Username already taken');
-        }
-    });
+  UserModel.find({ username: username }).exec((err, users) => {
+    //Try to find a username
+    if (!users.length) {
+      //If none is found create a new username
+      let newUser = new UserModel({
+        username: username,
+        log: 
+      });
+
+      newUser.save((err, data) => {
+        if (err) return console.log(err);
+        res.json(newUser);
+      });
+    } else {
+      res.send("Username already taken");
+    }
+  });
 });
 
 app.get("/api/exercise/users", function (req, res) {
@@ -186,48 +196,24 @@ app.get("/api/exercise/users", function (req, res) {
   });
 });
 
-const exerciseSchema = new Schema({
-  _id:{
-    type: String,
-    required: true
-  },
-  username:{
-    type: String,
-    required: true
-  },
-  date: Date,
-  duration: {
-    type: Number,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  }
-});
-
-const ExerciseModel = mongoose.model("ExerciseModel", exerciseSchema);
-
 app.post("/api/exercise/add", (req, res) => {
   let userId = req.body.userId;
-  // let username = UserModel.userId
-  UserModel.find({_id: userId}, (err, data) => {
-    if (err) return console.log(err);
-    let username = data[0].username;
-    
-    let newExercise = new ExerciseModel({
-      _id: userId,
-      username: username,
-      date: req.body.date,
-      duration: req.body.duration,
-      description: req.body.description
-    });
-  
-    newExercise.save((err, data) => {
-      if (err) return console.log(err);
-      res.json(data);
-    });
-  });
+
+  UserModel.findOneAndUpdate(
+    {_id: userId},
+    {$push: 
+      {
+        log:{
+          date: dateFormat(
+            new Date(req.body.date === "" ? Date() : req.body.date),
+            "ddd mmm dd yyyy"
+          ),
+          duration: req.body.duration,
+          description: req.body.description
+        }
+      }
+    }
+  );
 });
 
 // listen for requests :)
