@@ -174,10 +174,7 @@ app.post("/api/exercise/new-user", (req, res) => {
               });
             });
         } else {
-          res.json({
-            _id: users[0]._id,
-            username: users[0].username
-          });
+          res.send('Username already taken');
         }
     });
 });
@@ -187,6 +184,39 @@ app.get("/api/exercise/users", function (req, res) {
     if (err) return console.log(err);
     res.json(data);
   });
+});
+
+const exerciseSchema = new Schema({
+  userId=_id, description, duration, and optionally date
+  username: String,
+});
+const ExerciseModel = mongoose.model("ExerciseModel", exerciseSchema);
+app.post("/api/exercise/add", (req, res) => {
+  let username = req.body.username;
+
+  UserModel.find({username: username})
+    .exec((err, users) => {
+        //Try to find a username
+        if (!users.length) {
+            //If none is found create a new username
+            let newUser = new UserModel({
+              username: username,
+            });
+          
+            newUser.save((err, data) => {
+              if (err) return console.log(err);
+              res.json({
+                _id: data._id,
+                username: data.username,
+              });
+            });
+        } else {
+          res.json({
+            _id: users[0]._id,
+            username: users[0].username
+          });
+        }
+    });
 });
 
 // listen for requests :)
