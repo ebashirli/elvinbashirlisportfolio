@@ -130,7 +130,7 @@ app.post("/api/shorturl/new", function (req, res) {
     });
 
     newURL.save(function (err, data) {
-      if (err) return done(err);
+      if (err) return console.log(err);
       res.json({
         original_url: newURL.original_url,
         short_url: newURL.short_url,
@@ -148,10 +148,44 @@ app.get("/api/shorturl/:short_url", function (req, res) {
 
 // Exercise Tracker
 
-app.post("/api/exercise/new-user", function (req, res) {
-  res.json({
-    _id: 1,
-    username: req.body.username
+const userSchema = new Schema({
+  username: String,
+});
+
+const UserModel = mongoose.model("UserModel", userSchema);
+
+app.post("/api/exercise/new-user", (req, res) => {
+  let username = req.body.username;
+
+  UserModel.find({username: username})
+    .exec((err, users) => {
+        //Try to find a username
+        if (!users.length) {
+            //If none is found create a new username
+            let newUser = new UserModel({
+              username: username,
+            });
+          
+            newUser.save((err, data) => {
+              if (err) return console.log(err);
+              res.json({
+                _id: data._id,
+                username: data.username,
+              });
+            });
+        } else {
+          res.json({
+            _id: users[0]._id,
+            username: users[0].username
+          });
+        }
+    });
+});
+
+app.get("/api/exercise/users", function (req, res) {
+  UserModel.find({}, (err, data) => {
+    if (err) return console.log(err);
+    res.json(data);
   });
 });
 
