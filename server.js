@@ -169,13 +169,13 @@ app.post(
     User.find({ username: req.body.username }).exec((err, users) => {
       if (!users.length) {
         let newUser = new User({
-          username: req.body.username
+          username: req.body.username,
         });
         newUser.save((err, savedUser) => {
           if (err) return console.log(err);
           res.json({
             _id: savedUser._id,
-            username: savedUser.username
+            username: savedUser.username,
           });
         });
       } else {
@@ -229,16 +229,34 @@ app.post(
 app.get("/api/exercise/log", (req, res) => {
   User.findById(req.query.userId, (err, result) => {
     if (!err) {
-      // let resObj = result;
-      // resObj['count'] = result.log.length;
-      res.json({
-        ...result._doc,
-        count: result._doc.log.length
-      });
+      let resObj = result._doc;
+
+      if (req.query.from || req.query.to) {
+        let fromDate = new Date(0);
+        let toDate = new Date();
+
+        if (req.query.from) {
+          fromDate = new Date(req.query.from);
+        }
+
+        if (req.query.to) {
+          toDate = new Date(req.query.to);
+        }
+
+        fromDate = fromDate.getTime();
+        toDate = toDate.getTime();
+
+        resObj.log = resObj.log.filter((sess) => {
+          let sessDate = new Date(sess.date).getTime();
+          return sessDate >= fromDate && sessDate <= toDate;
+        });
+      }
+
+      resObj["count"] = result._doc.log.length;
+      res.json(resObj);
     }
   });
 });
-
 
 // listen for requests :)
 var listener = app.listen(port, function () {
