@@ -176,7 +176,6 @@ app.post("/api/exercise/new-user", (req, res) => {
       //If none is found create a new username
       let newUser = new UserModel({
         username: username,
-        log: 
       });
 
       newUser.save((err, data) => {
