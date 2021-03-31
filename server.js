@@ -181,7 +181,10 @@ app.post("/api/exercise/new-user", (req, res) => {
 
       newUser.save((err, data) => {
         if (err) return console.log(err);
-        res.json(newUser);
+        res.json({
+          username: data.username,
+          _id: data._id
+        });
       });
     } else {
       res.send("Username already taken");
