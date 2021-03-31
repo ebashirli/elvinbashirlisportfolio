@@ -168,12 +168,14 @@ app.post(
   (req, res) => {
     User.find({ username: req.body.username }).exec((err, users) => {
       if (!users.length) {
-        let newUser = new User({ username: req.body.username });
+        let newUser = new User({
+          username: req.body.username
+        });
         newUser.save((err, savedUser) => {
           if (err) return console.log(err);
           res.json({
             _id: savedUser._id,
-            username: savedUser.username,
+            username: savedUser.username
           });
         });
       } else {
@@ -184,10 +186,13 @@ app.post(
 );
 
 app.get("/api/exercise/users", (req, res) => {
-  User.find({}, (err, data) => {
-    if (err) return console.log(err);
-    res.json(data);
-  });
+  User.find({})
+    .select({ log: 0 })
+    .exec((err, data) => {
+      if (!err) {
+        res.json(data);
+      }
+    });
 });
 
 app.post(
@@ -206,7 +211,7 @@ app.post(
 
     User.findByIdAndUpdate(
       req.body.userId,
-      { $push: { log: { newSession } } },
+      { $push: { log: newSession } },
       { new: true },
       (err, updatedUser) => {
         res.json({
@@ -222,15 +227,18 @@ app.post(
 );
 
 app.get("/api/exercise/log", (req, res) => {
-  User.findById(
-    req.query.userId,
-    (err, result) => {
-    if (err) return console.log(err);
-    let responseObj = result;
-    responseObj['count'] = result.log.length;
-    res.json(responseObj);
+  User.findById(req.query.userId, (err, result) => {
+    if (!err) {
+      // let resObj = result;
+      // resObj['count'] = result.log.length;
+      res.json({
+        ...result._doc,
+        count: result._doc.log.length
+      });
+    }
   });
 });
+
 
 // listen for requests :)
 var listener = app.listen(port, function () {
