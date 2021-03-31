@@ -6,7 +6,6 @@ var express = require("express");
 var mongo = require("mongodb");
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
-var dateFormat = require("dateformat");
 const { nanoid } = require("nanoid");
 var cors = require("cors");
 var app = express();
@@ -149,89 +148,78 @@ app.get("/api/shorturl/:short_url", function (req, res) {
 
 // Exercise Tracker
 
+let exerciseSessionSchema = new Schema({
+  description: { type: String, required: true },
+  duration: { type: Number, required: true },
+  date: String,
+});
+
 const userSchema = new Schema({
-  username: String,
-  log: [
-    {
-      date: String,
-      duration: {
-        type: Number,
-        required: true,
-      },
-      description: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  username: { type: String, required: true },
+  log: [exerciseSessionSchema],
 });
 
-const UserModel = mongoose.model("UserModel", userSchema);
+let Session = mongoose.model("Session", exerciseSessionSchema);
+let User = mongoose.model("User", userSchema);
 
-app.post("/api/exercise/new-user", (req, res) => {
-  let username = req.body.username;
-
-  UserModel.find({ username: username }).exec((err, users) => {
-    //Try to find a username
-    if (!users.length) {
-      //If none is found create a new username
-      let newUser = new UserModel({
-        username: username,
-      });
-
-      newUser.save((err, data) => {
-        if (err) return console.log(err);
-        res.json({
-          username: data.username,
-          _id: data._id
+app.post(
+  "/api/exercise/new-user",
+  bodyParser.urlencoded({ extended: false }),
+  (req, res) => {
+    UserModel.find({ username: username }).exec((err, users) => {
+      if (!users.length) {
+        let newUser = new User({ username: req.body.username });
+        newUser.save((err, savedUser) => {
+          if (err) return console.log(err);
+          res.json({
+            _id: savedUser._id,
+            username: savedUser.username,
+          });
         });
-      });
-    } else {
-      res.send("Username already taken");
-    }
-  });
-});
+      } else {
+        res.send("Username already taken");
+      }
+    });
+  }
+);
 
-app.get("/api/exercise/users", function (req, res) {
-  UserModel.find({}, (err, data) => {
+app.get("/api/exercise/users", (req, res) => {
+  User.find({}, (err, data) => {
     if (err) return console.log(err);
     res.json(data);
   });
 });
 
-app.post("/api/exercise/add", (req, res) => {
-  let userId = req.body.userId;
+app.post(
+  "/api/exercise/add",
+  bodyParser.urlencoded({ extended: false }),
+  (req, res) => {
+    let newSession = new Session({
+      duration: req.body.duration,
+      description: req.body.description,
+      date: req.body.date,
+    });
 
-  UserModel.findOneAndUpdate(
-    { _id: userId },
-    {
-      $push: {
-        log: {
-          date: dateFormat(
-            new Date(req.body.date === "" ? Date() : req.body.date),
-            "ddd mmm dd yyyy"
-          ),
-          duration: req.body.duration,
-          description: req.body.description,
-        },
-      },
-    },
-    { new: true },
-    (err, data) => {
-      if (err) return console.log(err);
-      res.json({
-        _id: userId,
-        username: data.username,
-        date: dateFormat(
-          new Date(req.body.date === "" ? Date() : req.body.date),
-          "ddd mmm dd yyyy"
-        ),
-        duration: req.body.duration,
-        description: req.body.description,
-      });
+    if (newSession.date === "") {
+      newSession.date = new Date().toISOString().substring(0, 10);
     }
-  );
-});
+
+    User.findByIdAndUpdate(
+      req.body.userId,
+      { $push: { log: { newSession } } },
+      { new: true },
+      (err, updatedUser) => {
+        res.json({
+          _id:updatedUser._id,
+          username:updatedUser.username,
+          date: new Date(newSession.date).toDateString(),
+          duration:updatedUser.duration,
+          description:updatedUser.description
+        });
+      }
+    );
+  }
+);
 
 // listen for requests :)
 var listener = app.listen(port, function () {
