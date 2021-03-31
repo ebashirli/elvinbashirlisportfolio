@@ -47,6 +47,10 @@ app.get("/url-shortener", function (req, res) {
   res.sendFile(__dirname + "/views/urlshortener.html");
 });
 
+app.get("/exercise-tracker", function (req, res) {
+  res.sendFile(__dirname + "/views/exercise-tracker.html");
+});
+
 // your first API endpoint...
 app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
@@ -118,12 +122,11 @@ app.post("/api/shorturl/new", function (req, res) {
       error: "invalid URL",
     });
   } else {
-    
     var short_url = nanoid(5);
 
     let newURL = new UrlModel({
       original_url: input_url,
-      short_url: short_url
+      short_url: short_url,
     });
 
     newURL.save(function (err, data) {
@@ -137,9 +140,18 @@ app.post("/api/shorturl/new", function (req, res) {
 });
 
 app.get("/api/shorturl/:short_url", function (req, res) {
-  UrlModel.findOne({ short_url: req.params.short_url   }, (err, data) => {
+  UrlModel.findOne({ short_url: req.params.short_url }, (err, data) => {
     if (err) return console.log(err);
     res.redirect(data.original_url);
+  });
+});
+
+// Exercise Tracker
+
+app.post("/api/exercise/new-user", function (req, res) {
+  res.json({
+    _id: 1,
+    username: req.body.username
   });
 });
 
