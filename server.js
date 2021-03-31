@@ -32,33 +32,33 @@ app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 2
 app.use(express.static("public"));
 
 // http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/timestamp", function (req, res) {
+app.get("/timestamp", (req, res) => {
   res.sendFile(__dirname + "/views/timestamp.html");
 });
 
-app.get("/header-parser", function (req, res) {
+app.get("/header-parser", (req, res) => {
   res.sendFile(__dirname + "/views/headerparser.html");
 });
 
-app.get("/url-shortener", function (req, res) {
+app.get("/url-shortener", (req, res) => {
   res.sendFile(__dirname + "/views/urlshortener.html");
 });
 
-app.get("/exercise-tracker", function (req, res) {
+app.get("/exercise-tracker", (req, res) => {
   res.sendFile(__dirname + "/views/exercise-tracker.html");
 });
 
 // your first API endpoint...
-app.get("/api/hello", function (req, res) {
+app.get("/api/hello", (req, res) => {
   res.json({ greeting: "hello API" });
 });
 
 // Timestamp Microservice Project
-app.get("/api/timestamp", function (req, res) {
+app.get("/api/timestamp", (req, res) => {
   let now = new Date();
   res.json({
     unix: now.getTime(),
@@ -66,7 +66,7 @@ app.get("/api/timestamp", function (req, res) {
   });
 });
 
-app.get("/api/timestamp/:date", function (req, res) {
+app.get("/api/timestamp/:date", (req, res) => {
   let date = Date.parse(req.params.date);
 
   if (isNaN(date)) {
@@ -88,7 +88,7 @@ app.get("/api/timestamp/:date", function (req, res) {
 });
 
 // Request Header Parser Microservice Project
-app.get("/api/whoami", function (req, res) {
+app.get("/api/whoami", (req, res) => {
   let now = new Date();
 
   res.json({
@@ -113,7 +113,7 @@ app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/api/shorturl/new", function (req, res) {
+app.post("/api/shorturl/new", (req, res) => {
   var input_url = req.body.url;
 
   var regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
@@ -129,7 +129,7 @@ app.post("/api/shorturl/new", function (req, res) {
       short_url: short_url,
     });
 
-    newURL.save(function (err, data) {
+    newURL.save((req, res) => {
       if (err) return console.log(err);
       res.json({
         original_url: newURL.original_url,
@@ -139,7 +139,7 @@ app.post("/api/shorturl/new", function (req, res) {
   }
 });
 
-app.get("/api/shorturl/:short_url", function (req, res) {
+app.get("/api/shorturl/:short_url", (req, res) => {
   UrlModel.findOne({ short_url: req.params.short_url }, (err, data) => {
     if (err) return console.log(err);
     res.redirect(data.original_url);
@@ -248,8 +248,13 @@ app.get("/api/exercise/log", (req, res) => {
 
         resObj.log = resObj.log.filter((sess) => {
           let sessDate = new Date(sess.date).getTime();
+
           return sessDate >= fromDate && sessDate <= toDate;
         });
+      }
+
+      if (req.query.limit) {
+        resObj.log = resObj.log.slice(0, req.query.limit);
       }
 
       resObj["count"] = result._doc.log.length;
@@ -259,6 +264,6 @@ app.get("/api/exercise/log", (req, res) => {
 });
 
 // listen for requests :)
-var listener = app.listen(port, function () {
+var listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
