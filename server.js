@@ -166,7 +166,7 @@ app.post(
   "/api/exercise/new-user",
   bodyParser.urlencoded({ extended: false }),
   (req, res) => {
-    UserModel.find({ username: username }).exec((err, users) => {
+    User.find({ username: req.body.username }).exec((err, users) => {
       if (!users.length) {
         let newUser = new User({ username: req.body.username });
         newUser.save((err, savedUser) => {
