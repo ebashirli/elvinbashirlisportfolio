@@ -187,36 +187,47 @@ app.get("/api/exercise/users", function (req, res) {
 });
 
 const exerciseSchema = new Schema({
-  userId=_id, description, duration, and optionally date
-  username: String,
+  _id:{
+    type: String,
+    required: true
+  },
+  username:{
+    type: String,
+    required: true
+  },
+  date: Date,
+  duration: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  }
 });
-const ExerciseModel = mongoose.model("ExerciseModel", exerciseSchema);
-app.post("/api/exercise/add", (req, res) => {
-  let username = req.body.username;
 
-  UserModel.find({username: username})
-    .exec((err, users) => {
-        //Try to find a username
-        if (!users.length) {
-            //If none is found create a new username
-            let newUser = new UserModel({
-              username: username,
-            });
-          
-            newUser.save((err, data) => {
-              if (err) return console.log(err);
-              res.json({
-                _id: data._id,
-                username: data.username,
-              });
-            });
-        } else {
-          res.json({
-            _id: users[0]._id,
-            username: users[0].username
-          });
-        }
+const ExerciseModel = mongoose.model("ExerciseModel", exerciseSchema);
+
+app.post("/api/exercise/add", (req, res) => {
+  let userId = req.body.userId;
+  // let username = UserModel.userId
+  UserModel.find({_id: userId}, (err, data) => {
+    if (err) return console.log(err);
+    let username = data[0].username;
+    
+    let newExercise = new ExerciseModel({
+      _id: userId,
+      username: username,
+      date: req.body.date,
+      duration: req.body.duration,
+      description: req.body.description
     });
+  
+    newExercise.save((err, data) => {
+      if (err) return console.log(err);
+      res.json(data);
+    });
+  });
 });
 
 // listen for requests :)
