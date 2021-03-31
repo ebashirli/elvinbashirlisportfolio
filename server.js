@@ -17,6 +17,7 @@ require("dotenv").config();
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 mongoose.connection.on("connected", () => {
@@ -161,8 +162,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
       },
-    }
-  ]
+    },
+  ],
 });
 
 const UserModel = mongoose.model("UserModel", userSchema);
@@ -199,18 +200,32 @@ app.post("/api/exercise/add", (req, res) => {
   let userId = req.body.userId;
 
   UserModel.findOneAndUpdate(
-    {_id: userId},
-    {$push: 
-      {
-        log:{
+    { _id: userId },
+    {
+      $push: {
+        log: {
           date: dateFormat(
             new Date(req.body.date === "" ? Date() : req.body.date),
             "ddd mmm dd yyyy"
           ),
           duration: req.body.duration,
-          description: req.body.description
-        }
-      }
+          description: req.body.description,
+        },
+      },
+    },
+    { new: true },
+    (err, data) => {
+      if (err) return console.log(err);
+      res.json({
+        _id: userId,
+        username: data.username,
+        date: dateFormat(
+          new Date(req.body.date === "" ? Date() : req.body.date),
+          "ddd mmm dd yyyy"
+        ),
+        duration: req.body.duration,
+        description: req.body.description,
+      });
     }
   );
 });
