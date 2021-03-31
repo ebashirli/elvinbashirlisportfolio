@@ -221,6 +221,17 @@ app.post(
   }
 );
 
+app.get("/api/exercise/log", (req, res) => {
+  User.findById(
+    req.query.userId,
+    (err, result) => {
+    if (err) return console.log(err);
+    let responseObj = result;
+    responseObj['count'] = result.log.length;
+    res.json(responseObj);
+  });
+});
+
 // listen for requests :)
 var listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
