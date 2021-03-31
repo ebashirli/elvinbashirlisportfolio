@@ -210,11 +210,11 @@ app.post(
       { new: true },
       (err, updatedUser) => {
         res.json({
-          _id:updatedUser._id,
-          username:updatedUser.username,
+          _id: updatedUser._id,
+          username: updatedUser.username,
           date: new Date(newSession.date).toDateString(),
-          duration:updatedUser.duration,
-          description:updatedUser.description
+          duration: newSession.duration,
+          description: newSession.description,
         });
       }
     );
