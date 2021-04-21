@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Lato", sans-serif;
+    }
+    
+    .sidebar {
+      margin: 0;
+      padding: 0;
+      width: 200px;
+      background-color: #f1f1f1;
+      position: fixed;
+      height: 100%;
+      overflow: auto;
+    }
+    
+    .sidebar a {
+      display: block;
+      color: black;
+      padding: 16px;
+      text-decoration: none;
+    }
+     
+    .sidebar a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .sidebar a:hover:not(.active) {
+      background-color: #555;
+      color: white;
+    }
+    
+    .content {
+      margin-left: 200px;
+      padding: 1px 16px;
+      height: 1000px;
+    }
+    
+    @media screen and (max-width: 700px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .sidebar a {float: left;}
+      .content {margin-left: 0;}
+    }
+    
+    @media screen and (max-width: 400px) {
+      .sidebar a {
+        text-align: center;
+        float: none;
+      }
+    }
+  </style>
+  <title>Technical Documentation Page</title>
+</head>
+<body>
+  <nav id="navbar" class="sidebar">
+    <header><h1>ABCDE</h1></header>
+    <ul>
+      <li><a href="#A" class="nav-link">A</a></li>
+      <li><a href="#B" class="nav-link">B</a></li>
+      <li><a href="#C" class="nav-link">C</a></li>
+      <li><a href="#D" class="nav-link">D</a></li>
+      <li><a href="#E" class="nav-link">E</a></li>
+    </ul>
+  </nav>
+  <main id="main-doc" class="content">
+    <section id="A" class="main-section">
+      <header>
+        <h2>A</h2>
+      </header>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <ul>
+        <li>a</li>
+        <li>b</li>
+      </ul>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <code>some code</code>
+    </section>
+    <section id="B" class="main-section">
+      <header>
+        <h2>B</h2>
+      </header>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <ul>
+        <li>a</li>
+        <li>b</li>
+      </ul>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <code>some code</code>
+    </section>
+    <section id="C" class="main-section">
+      <header>
+        <h2>C</h2>
+      </header>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <ol>
+        <li>a</li>
+        <li>b</li>
+      </ol>
+      <code>some code</code>
+    </section>
+    <section id="D" class="main-section">
+      <header>
+        <h2>D</h2>
+      </header>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <code>some code</code>
+    </section>
+    <section id="E" class="main-section">
+      <header>
+        <h2>E</h2>
+      </header>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequatur deserunt repudiandae corrupti sapiente dolorem accusamus autem eligendi amet alias fuga? Explicabo at dolor animi praesentium veniam odio ex deleniti laborum.</p>
+      <code>some code</code>
+    </section>
+  </main>
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+</body>
+</html>
