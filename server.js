@@ -10,7 +10,7 @@ var multer = require("multer");
 const { nanoid } = require("nanoid");
 var cors = require("cors");
 var app = express();
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3001;
 
 require("dotenv").config();
 
@@ -37,29 +37,74 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+// Responsive Web Design Projects
+app.get("/tribute-page", (req, res) => {
+  res.sendFile(__dirname + "/views/responsive-web-design/tribute-page.html");
+});
+
+app.get("/survey-form", (req, res) => {
+  res.sendFile(__dirname + "/views/responsive-web-design/survey-form.html");
+});
+
+app.get("/product-landing-page", (req, res) => {
+  res.sendFile(__dirname + "/views/responsive-web-design/product-landing-page.html");
+});
+
+app.get("/technical-documentation-page", (req, res) => {
+  res.sendFile(__dirname + "/views/responsive-web-design/technical-documentation-page.html");
+});
+
+app.get("/personal-portfolio-webpage", (req, res) => {
+  res.sendFile(__dirname + "/views/index.html");
+});
+
+// Front End Development Libraries Projects
+app.get("/random-quote-machine", (req, res) => {
+  res.sendFile(__dirname + "/views/front-end-development-libraries/random-quote-machine.html");
+});
+
+app.get("/markdown-previewer", (req, res) => {
+  res.sendFile(__dirname + "/views/front-end-development-libraries/markdown-previewer.html");
+});
+
+app.get("/drum-machine", (req, res) => {
+  res.sendFile(__dirname + "/views/front-end-development-libraries/drum-machine.html");
+});
+
+app.get("/javascript-calculator", (req, res) => {
+  res.sendFile(__dirname + "/views/front-end-development-libraries/javascript-calculator.html");
+});
+
+app.get("/25-5-clock", (req, res) => {
+  res.sendFile(__dirname + "/views/front-end-development-libraries/25-5-clock.html");
+});
+
+// APIs and Microservices Projects
+// 1.
 app.get("/timestamp", (req, res) => {
-  res.sendFile(__dirname + "/views/timestamp.html");
+  res.sendFile(__dirname + "/views/apis-and-microservices/timestamp.html");
 });
-
-app.get("/header-parser", (req, res) => {
-  res.sendFile(__dirname + "/views/headerparser.html");
+// 2
+app.get("/request-header-parser", (req, res) => {
+  res.sendFile(__dirname + "/views/apis-and-microservices/requestheaderparser.html");
 });
-
+// 3.
 app.get("/url-shortener", (req, res) => {
-  res.sendFile(__dirname + "/views/urlshortener.html");
+  res.sendFile(__dirname + "/views/apis-and-microservices/urlshortener.html");
 });
-
+// 4.
 app.get("/exercise-tracker", (req, res) => {
-  res.sendFile(__dirname + "/views/exercise-tracker.html");
+  res.sendFile(__dirname + "/views/apis-and-microservices/exercise-tracker.html");
 });
-
+// 5.
 app.get("/file-metadata", (req, res) => {
-  res.sendFile(__dirname + "/views/file-metadata.html");
+  res.sendFile(__dirname + "/views/apis-and-microservices/file-metadata.html");
 });
 
-// your first API endpoint...
-app.get("/api/hello", (req, res) => {
-  res.json({ greeting: "hello API" });
+// Quality Assurance Projects
+// 1.
+app.get("/metric-imperial-converter", (req, res) => {
+  res.sendFile(__dirname + "/views/quality-assurance/metric-imperial-converter.html");
 });
 
 // Timestamp Microservice Project
@@ -269,17 +314,13 @@ app.get("/api/exercise/log", (req, res) => {
 });
 
 // File Metadata
-app.post(
-  "/api/fileanalyse",
-  multer().single('upfile'),
-  (req, res) => {
-    res.json({
-      name: req.file.originalname,
-      type: req.file.mimetype,
-      size: req.file.size
-    });
-  }
-);
+app.post("/api/fileanalyse", multer().single("upfile"), (req, res) => {
+  res.json({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size,
+  });
+});
 
 // listen for requests :)
 var listener = app.listen(port, () => {
