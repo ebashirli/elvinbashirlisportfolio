@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+
+  
+  <script src="https://unpkg.com/react@16.4.0/umd/react.production.min.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/react-dom@16.4.0/umd/react-dom.production.min.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+
+  <title>Random Quote Machine</title>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    let quotes = [
+      {
+        "quote":"The greatest glory in living lies not in never falling, but in rising every time we fall.",
+        "author":"Nelson Mandela"
+      },
+      {
+        "quote":"The way to get started is to quit talking and begin doing.",
+        "author":"Walt Disney"
+      },
+      {
+        "quote":"Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking.",
+        "author":"Steve Jobs"
+      },
+      {
+        "quote":"If life were predictable it would cease to be life, and be without flavor.",
+        "author":"Eleanor Roosevelt"
+      },
+      {
+        "quote":"If you look at what you have in life, you'll always have more. If you look at what you don't have in life, you'll never have enough.",
+        "author":"Oprah Winfrey"
+      },
+      {
+        "quote":"If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success.",
+        "author":"James Cameron"
+      },
+      {
+        "quote":"Life is what happens when you're busy making other plans.",
+        "author":"John Lennon"
+      },
+      {
+        "quote":"Spread love everywhere you go. Let no one ever come to you without leaving happier.",
+        "author":"Mother Teresa"
+      },
+      {
+        "quote":"When you reach the end of your rope, tie a knot in it and hang on.",
+        "author":"Franklin D. Roosevelt"
+      },
+      {
+        "quote":"Always remember that you are absolutely unique. Just like everyone else.",
+        "author":"Margaret Mead"
+      },
+      {
+        "quote":"Don't judge each day by the harvest you reap but by the seeds that you plant.",
+        "author":"Robert Louis Stevenson"
+      },
+      {
+        "quote":"The future belongs to those who believe in the beauty of their dreams.",
+        "author":"Eleanor Roosevelt"
+      },
+      {
+        "quote":"Tell me and I forget. Teach me and I remember. Involve me and I learn.",
+        "author":"Benjamin Franklin"
+      },
+      {
+        "quote":"The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.",
+        "author":"Helen Keller"
+      },
+      {
+        "quote":"It is during our darkest moments that we must focus to see the light.",
+        "author":"Aristotle"
+      },
+      {
+        "quote":"Whoever is happy will make others happy too.",
+        "author":"Anne Frank"
+      },
+      {
+        "quote":"Do not go where the path may lead, go instead where there is no path and leave a trail.",
+        "author":"Ralph Waldo Emerson"
+      }
+    ];
+
+    let randQuote = () => quotes[Math.floor(Math.random() * quotes.length)];
+
+    class QuoteAuthor extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = randQuote();
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+      render() {
+        return (
+          <div id="quote-box">
+            <blockquote id="text">{this.state.quote}</blockquote>
+            <em id="author">{this.state.author}</em>
+            <form onSubmit={this.handleSubmit}>
+              <input type="submit" value="New Quote" id="new-quote" />
+            </form>
+            <a href="http://twitter.com/intent/tweet" id="tweet-quote" target="_blank">Tweet This quote</a>
+          </div>
+        );
+      }
+      handleSubmit(e) {
+        this.setState(state => (randQuote()));
+      }
+    }
+    ReactDOM.render(<QuoteAuthor />, document.getElementById('root'));  
+  </script>
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+</body>
+</html>
