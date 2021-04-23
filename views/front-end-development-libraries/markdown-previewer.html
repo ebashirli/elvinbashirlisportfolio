@@ -1,12 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markdown Previewer</title>
-</head>
-<body>
-  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Markdown Previewer</title>
+  </head>
+  <body>
+    <div id="root" class="container"></div>
+    <script type="text/babel">
+      marked.setOptions({
+        breaks: true,
+      });
+      const defText = `# header 1
+## header 2
+[a link](https://www.google.com)
+\`inline code\`
+\`\`\`
+const greater = (name) {
+  console.log("Hello" + name);
+}
+\`\`\`
+- a
+- list
+- item
+> A Block Quote
+![an image](https://commonmark.org/help/images/favicon.png)
+**bolded text**
+`
+
+      function App() {
+        const [text, setText] = React.useState(defText);
+        return (
+          <div className="row">
+            <div className="col-sm">
+              <h1>Input</h1>
+              <textarea
+                id="editor"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              ></textarea>
+            </div>
+            <div className="col-sm">
+              <h1>Output</h1>
+              <Preview markdown={text} />
+            </div>
+          </div>
+        );
+      }
+
+      function Preview({ markdown }) {
+        return (
+          <div
+            id="preview"
+            dangerouslySetInnerHTML={{
+              __html: marked(markdown),
+            }}
+          />
+        );
+      }
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+  </body>
 </html>
