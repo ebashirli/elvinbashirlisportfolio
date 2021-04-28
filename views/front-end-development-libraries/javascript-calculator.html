@@ -1,28 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://unpkg.com/react@16.4.0/umd/react.production.min.js" type="text/javascript"></script>
-  <script src="https://unpkg.com/react-dom@16.4.0/umd/react-dom.production.min.js" type="text/javascript"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <title>Javascript Calculator</title>
-</head>
-<body>
-  <div id="root"></div>
-  
-  <script type="text/babel">
-    const MdComponent = (props) => {
-      return (
-        <div>
-          <p>Hello React!</p>
-        </div>
-      );
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <title>Javascript Calculator</title>
+  </head>
+  <body>
+    <div id="root"></div>
 
-    ReactDOM.render(<MdComponent />, document.getElementById('root'));
-  </script>
-  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
-</body>
+    <script type="text/babel">
+      const buttons = [
+        ["zero", "0"],
+        ["one", "1"],
+        ["two", "2"],
+        ["three", "3"],
+        ["four", "4"],
+        ["five", "5"],
+        ["six", "6"],
+        ["seven", "7"],
+        ["eight", "8"],
+        ["nine", "9"],
+        ["decimal", "."],
+        ["add", "+"],
+        ["subtract", "-"],
+        ["multiply", "*"],
+        ["divide", "/"],
+      ];
+
+      function App() {
+        const [display, setDisplay] = React.useState("0");
+        const [num, setNum] = React.useState("");
+        const [op, setOp] = React.useState("");
+
+        return (
+          <div className="container">
+            {buttons.map((button) => {
+              const [key, value] = button;
+              return (
+                <input
+                  type="button"
+                  key={key}
+                  value={value}
+                  id={key}
+                  onClick={(e) => {
+                    let val = e.target.value;
+                    setDisplay(display + val, () => console.log(display));
+                  }}
+                />
+              );
+            })}
+            <input
+              type="button"
+              value="="
+              id="equals"
+              onClick={(e) => setDisplay(eval(display))}
+            />
+
+            <input
+              type="button"
+              value="C"
+              id="clear"
+              onClick={(e) => setDisplay(0)}
+            />
+            <div id="display">{display}</div>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+  </body>
 </html>
